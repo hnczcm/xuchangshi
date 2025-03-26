@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>徐常实 | Java极客与游戏宅</title>
+    <style>
+        :root {
+            --neon-blue: #0ff0fc;
+            --neon-pink: #ff2a6d;
+            --neon-purple: #d300c5;
+            --dark-space: #0d0221;
+            --deep-space: #04052e;
+            --cosmic-text: #e8f7ee;
+            --matrix-green: #00ff41;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', 'Microsoft YaHei', monospace;
+        }
+        
+        body {
+            background-color: var(--dark-space);
+            color: var(--cosmic-text);
+            background-image: 
+                radial-gradient(circle at 75% 25%, rgba(13, 2, 33, 0.8) 0%, transparent 25%),
+                linear-gradient(to bottom, var(--deep-space), var(--dark-space));
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        .cyber-card {
+            position: relative;
+            background: rgba(13, 2, 33, 0.7);
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue), 
+                        inset 0 0 10px var(--neon-blue);
+            border-radius: 5px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .cyber-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px var(--neon-purple),
+                        inset 0 0 15px var(--neon-pink);
+        }
+        
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            border: 1px solid var(--neon-pink);
+            border-radius: 3px;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 8px var(--neon-blue), 
+                         0 0 16px rgba(0, 242, 254, 0.3);
+        }
+        
+        .pink-glow {
+            text-shadow: 0 0 8px var(--neon-pink), 
+                         0 0 16px rgba(255, 42, 109, 0.3);
+        }
+        
+        .matrix-text {
+            color: var(--matrix-green);
+            text-shadow: 0 0 5px var(--matrix-green);
+        }
+        
+        header {
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(4, 5, 46, 0.9) 0%, rgba(13, 2, 33, 0.95) 100%);
+            border-bottom: 1px solid var(--neon-purple);
+        }
+        
+        .header-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 42, 109, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 42, 109, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .tagline {
+            font-size: 1.3rem;
+            color: var(--neon-blue);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .location {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            background: rgba(255, 42, 109, 0.2);
+            border: 1px solid var(--neon-pink);
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        nav a {
+            color: var(--cosmic-text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 0.7rem 1.5rem;
+            position: relative;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        
+        nav a:hover {
+            color: var(--neon-blue);
+            border-color: var(--neon-blue);
+            background: rgba(0, 242, 254, 0.1);
+        }
+        
+        .active {
+            color: var(--neon-pink);
+            border-color: var(--neon-pink);
+            background: rgba(255, 42, 109, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 3rem;
+        }
+        
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+        
+        .post-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--neon-blue);
+            border-left: 4px solid var(--neon-pink);
+            padding-left: 1rem;
+        }
+        
+        .post-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        .post-content {
+            margin-bottom: 1.5rem;
+        }
+        
+        .read-more {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: transparent;
+            color: var(--neon-pink);
+            border: 1px solid var(--neon-pink);
+            border-radius: 4px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .read-more:hover {
+            background: var(--neon-pink);
+            color: var(--dark-space);
+            box-shadow: 0 0 15px var(--neon-pink);
+        }
+        
+        aside {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .profile-card {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue);
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-name {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-title {
+            color: var(--neon-blue);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .profile-desc {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            color: var(--cosmic-text);
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--neon-pink);
+            transform: translateY(-3px);
+        }
+        
+        .hobbies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .hobby-tag {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(211, 0, 197, 0.2);
+            border: 1px solid var(--neon-purple);
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .hobby-tag.primary {
+            background: rgba(0, 242, 254, 0.2);
+            border-color: var(--neon-blue);
+        }
+        
+        .widget-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--neon-purple);
+            color: var(--neon-blue);
+        }
+        
+        .game-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            color: var(--neon-pink);
+            margin-bottom: 0.3rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .recent-games {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .game-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .game-item:hover {
+            background: rgba(255, 42, 109, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .game-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .game-info h4 {
+            margin-bottom: 0.2rem;
+            color: var(--neon-blue);
+        }
+        
+        .game-info p {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 42, 109, 0.3);
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        /* 动画效果 */
+        @keyframes flicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 0.99;
+                text-shadow: 0 0 10px var(--neon-blue);
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.4;
+                text-shadow: none;
+            }
+        }
+        
+        .flicker {
+            animation: flicker 3s linear infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 5px var(--neon-blue);
+            }
+            50% {
+                box-shadow: 0 0 20px var(--neon-blue);
+            }
+            100% {
+                box-shadow: 0 0 5px var(--neon-blue);
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            nav {
+                gap: 1rem;
+            }
+            
+            nav a {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-grid"></div>
+        <div class="header-content">
+            <h1 class="glow-text">徐常实</h1>
+            <p class="tagline flicker">代码 · 游戏 · 科幻宇宙</p>
+            <div class="location pink-glow">深圳 · 辽宁</div>
+            <nav>
+                <a href="#" class="active">首页</a>
+                <a href="#">技术博客</a>
+                <a href="#">游戏评测</a>
+                <a href="#">科幻影评</a>
+                <a href="#">关于我</a>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="container">
+        <main>
+            <article class="cyber-card">
+                <h2 class="post-title">Java 17新特性深度解析</h2>
+                <div class="post-meta">
+                    <span>2023年10月15日</span>
+                    <span>分类: <a href="#" class="matrix-text">Java技术</a></span>
+                    <span>阅读量: 1289</span>
+                </div>
+                <div class="post-content">
+                    <p>随着Java 17的LTS版本发布，作为Java开发者我们需要关注哪些重要的新特性？本文将从模式匹配、密封类、新的API等多个角度，结合代码示例深入分析这些特性在实际开发中的应用场景...</p>
+                </div>
+                <a href="#" class="read-more">阅读全文 →</a>
+            </article>
+            
+            <article class="cyber-card">
+                <h2 class="post-title">英雄联盟S13赛季中路Meta分析</h2>
+                <div class="post-meta">
+                    <span>2023年9月28日</span>
+                    <span>分类: <a href="#" class="matrix-text">游戏竞技</a></span>
+                    <span>阅读量: 892</span>
+                </div>
+                <div class="post-content">
+                    <p>S13赛季中路格局发生了巨大变化，传统法师逐渐让位给刺客和战士英雄。本文将详细分析当前版本中路T1-T3英雄梯队，装备选择策略，以及针对不同对手的对线技巧...</p>
+                </div>
+                <a href="#" class="read-more">阅读全文 →</a>
+            </article>
+            
+            <article class="cyber-card">
+                <h2 class="post-title">《赛博朋克2077》DLC影刃之影评测</h2>
+                <div class="post-meta">
+                    <span>2023年9月15日</span>
+                    <span>分类: <a href="#" class="matrix-text">科幻游戏</a></span>
+                    <span>阅读量: 1567</span>
+                </div>
+                <div class="post-content">
+                    <p>CDPR终于为《赛博朋克2077》带来了首个大型故事DLC，这次更新不仅修复了大量bug，还带来了全新的区域、任务线和游戏机制。作为资深赛博朋克粉丝，我将从剧情、玩法和技术三个维度进行深度评测...</p>
+                </div>
+                <a href="#" class="read-more">阅读全文 →</a>
+            </article>
+        </main>
+        
+        <aside>
+            <div class="cyber-card profile-card">
+                <img src="https://via.placeholder.com/150" alt="徐常实" class="avatar pulse">
+                <h3 class="profile-name glow-text">徐常实</h3>
+                <p class="profile-title pink-glow">Java开发工程师</p>
+                <p class="profile-desc">28岁辽宁人，现居深圳。白天写Java代码，晚上打英雄联盟的资深宅男。热爱技术、游戏和科幻电影，偶尔研究护肤。</p>
+                
+                <div class="hobbies">
+                    <span class="hobby-tag primary">Java开发</span>
+                    <span class="hobby-tag">英雄联盟</span>
+                    <span class="hobby-tag">科幻电影</span>
+                    <span class="hobby-tag">护肤</span>
+                    <span class="hobby-tag">宅</span>
+                </div>
+                
+                <div class="social-links">
+                    <a href="#" title="GitHub">👾</a>
+                    <a href="#" title="Steam">🎮</a>
+                    <a href="#" title="微博">📱</a>
+                    <a href="#" title="知乎">💡</a>
+                    <a href="#" title="B站">📺</a>
+                </div>
+            </div>
+            
+            <div class="cyber-card">
+                <h3 class="widget-title">游戏数据</h3>
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <div class="stat-value pink-glow">钻石</div>
+                        <div class="stat-label">英雄联盟段位</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value pink-glow">1,258</div>
+                        <div class="stat-label">Steam游戏数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value pink-glow">87%</div>
+                        <div class="stat-label">赛博朋克完成度</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value pink-glow">3.2K</div>
+                        <div class="stat-label">B站粉丝</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cyber-card">
+                <h3 class="widget-title">最近游戏</h3>
+                <div class="recent-games">
+                    <div class="game-item">
+                        <img src="https://via.placeholder.com/40" alt="游戏图标" class="game-icon">
+                        <div class="game-info">
+                            <h4>英雄联盟</h4>
+                            <p>15小时前 · 排位赛</p>
+                        </div>
+                    </div>
+                    <div class="game-item">
+                        <img src="https://via.placeholder.com/40" alt="游戏图标" class="game-icon">
+                        <div class="game-info">
+                            <h4>赛博朋克2077</h4>
+                            <p>昨天 · 主线任务</p>
+                        </div>
+                    </div>
+                    <div class="game-item">
+                        <img src="https://via.placeholder.com/40" alt="游戏图标" class="game-icon">
+                        <div class="game-info">
+                            <h4>星际争霸2</h4>
+                            <p>3天前 · 合作模式</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cyber-card">
+                <h3 class="widget-title">推荐电影</h3>
+                <div class="recent-games">
+                    <div class="game-item">
+                        <img src="https://via.placeholder.com/40" alt="电影海报" class="game-icon">
+                        <div class="game-info">
+                            <h4>银翼杀手2049</h4>
+                            <p>赛博朋克 · 9.0分</p>
+                        </div>
+                    </div>
+                    <div class="game-item">
+                        <img src="https://via.placeholder.com/40" alt="电影海报" class="game-icon">
+                        <div class="game-info">
+                            <h4>头号玩家</h4>
+                            <p>科幻 · 8.7分</p>
+                        </div>
+                    </div>
+                    <div class="game-item">
+                        <img src="https://via.placeholder.com/40" alt="电影海报" class="game-icon">
+                        <div class="game-info">
+                            <h4>黑客帝国</h4>
+                            <p>经典 · 9.1分</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+    
+    <footer>
+        <p>© 2023 徐常实的赛博空间 · 由代码与梦想驱动</p>
+        <p class="matrix-text">Powered by Java & Neon Lights</p>
+    </footer>
+</body>
+</html>
